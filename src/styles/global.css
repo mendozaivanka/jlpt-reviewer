@@ -1,0 +1,6 @@
+/* Nordic Rose: Tailwind v4 theme, shadcn mapping, fonts and utilities (synced from nordic-rose; do not edit). */
+@import "./nordic-rose.css";
+
+/* ───────── Project styles go below ─────────
+   To give this project its own palette, paste docs/palette-example.css from nordic-rose here
+   (scoped under html[data-palette="..."]) and set `palette` on the Layout. */

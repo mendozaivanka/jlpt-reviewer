@@ -1,0 +1,12 @@
+dist/
+.astro/
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+# generated from src/data/tokens.ts before every dev/build
+src/styles/tokens.css
+# downloaded sources and generated data (rebuilt by npm run data)
+.cache/
+public/data/

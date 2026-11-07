@@ -1,0 +1,11 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Page not found">
+  <section class="grid gap-3 py-16">
+    <span class="label-mono">404</span>
+    <h1 class="font-heading text-4xl font-semibold">Page not found</h1>
+    <a href={import.meta.env.BASE_URL} class="text-primary-strong underline underline-offset-4">Back home</a>
+  </section>
+</Layout>

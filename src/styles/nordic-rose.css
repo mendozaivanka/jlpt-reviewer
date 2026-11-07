@@ -1,0 +1,211 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Self-hosted brand type: Manrope (display and body), Red Hat Mono (labels and numbers).
+   Japanese falls back to the system's Hiragino / Noto Sans JP / Yu Gothic. */
+@import "@fontsource-variable/manrope/wght.css";
+@import "@fontsource-variable/red-hat-mono/wght.css";
+
+/* Colour tokens, generated from src/data/tokens.ts */
+@import "./tokens.css";
+
+/* `no-js:` utilities apply until the head script confirms JavaScript runs */
+@custom-variant no-js (:where(.no-js) &);
+
+/* `dark:` utilities follow data-theme, falling back to the OS preference */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme="light"], [data-theme="light"] *)) {
+      @slot;
+    }
+  }
+}
+
+@theme inline {
+  --font-sans: "Manrope Variable", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  /* Legacy alias from the previous Rosa palette: there is no serif in Nordic Rose, so `font-serif` renders as the heading face.
+     Prefer `font-heading` in new code. */
+  --font-serif: var(--font-heading);
+  --font-mono: "Red Hat Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-strong: var(--primary-strong);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-rosas-1: var(--rosas-1);
+  --color-rosas-2: var(--rosas-2);
+  --color-rosas-3: var(--rosas-3);
+  --color-rosas-4: var(--rosas-4);
+  --color-rosas-5: var(--rosas-5);
+  --color-fjord: var(--fjord);
+  --color-fjord-ink: var(--fjord-ink);
+  --color-moss: var(--moss);
+  --color-sand: var(--sand);
+  --color-heather: var(--heather);
+
+  --color-chart-1: var(--rosas-1);
+  --color-chart-2: var(--rosas-2);
+  --color-chart-3: var(--rosas-3);
+  --color-chart-4: var(--rosas-4);
+  --color-chart-5: var(--rosas-5);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+      color-scheme: dark;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    overflow-x: clip;
+  }
+  ::selection {
+    @apply bg-primary text-primary-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Headings: one face, set tighter and heavier than body text. */
+@layer base {
+  :where(h1, h2, h3, h4) {
+    @apply font-heading;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+}
+
+@utility label-mono {
+  @apply font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground;
+}
+
+@utility container-site {
+  @apply mx-auto w-full max-w-[1040px] xl:max-w-[1120px];
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  @media (width >= 40rem) {
+    padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+@layer components {
+  /* Horizon: the Nordic Rose motif. A small pink sun sitting on an element's bottom border, near the right
+     edge. Put it on the site header (it travels with the sticky header), or on any bordered divider:
+     <header class="horizon border-b">, <div class="horizon border-b" aria-hidden="true"></div>. */
+  .horizon {
+    position: relative;
+  }
+  .horizon::after {
+    content: "";
+    position: absolute;
+    bottom: -7px;
+    right: max(2rem, env(safe-area-inset-right, 0px));
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+
+  /* Sections fade in on scroll. They are only hidden once the reveal script itself has
+     started (html.js-reveal), so a failed script, no JS, print or reduced motion all show everything. */
+  .js-reveal .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+  }
+  .js-reveal .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce), print {
+    .js-reveal .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Live status dot */
+  .status-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3fae7a;
+  }
+  .status-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: inherit;
+    animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .status-dot::after {
+      animation: none;
+    }
+  }
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}

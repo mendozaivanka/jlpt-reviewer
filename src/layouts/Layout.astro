@@ -1,0 +1,90 @@
+---
+import "@/styles/global.css";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { Toaster } from "@/components/ui/sonner";
+import { site, href } from "@/data/site";
+import { light, dark } from "@/data/tokens";
+
+type Props = {
+  title: string;
+  description?: string;
+  hideHeader?: boolean;
+  /** Optional project palette (see docs/palette-example.css in nordic-rose). Sets <html data-palette>. */
+  palette?: string;
+  /** theme-color (mobile browser chrome) for a palette; defaults to the Nordic Rose backgrounds. */
+  themeColor?: { light: string; dark: string };
+};
+
+const { title, description = site.description, hideHeader = false, palette, themeColor = { light: light.background, dark: dark.background } } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+---
+
+<!doctype html>
+<html lang="en" class="no-js" data-palette={palette}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content={themeColor.light} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={themeColor.dark} media="(prefers-color-scheme: dark)" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
+    <link rel="sitemap" href={href("/sitemap-index.xml")} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary" />
+    <!-- Runs before paint so a saved theme never flashes. is:inline keeps it out of the bundle. -->
+    <script is:inline>
+      document.documentElement.classList.remove("no-js");
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+        var c = localStorage.getItem("contrast");
+        if (c === "high" || c === "normal") document.documentElement.dataset.contrast = c;
+      } catch (_) {}
+    </script>
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only z-50 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      Skip to content
+    </a>
+    {!hideHeader && <Header />}
+    <main id="main" class="container-site" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <Toaster client:load />
+
+    <script>
+      // Fade sections in as they scroll into view. Nothing is hidden unless this script
+      // actually runs and the browser can observe; otherwise sections stay visible.
+      if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        throw new Error("reveal: skipped");
+      }
+      document.documentElement.classList.add("js-reveal");
+      const io = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          }),
+        { threshold: 0.1 },
+      );
+      document.querySelectorAll<HTMLElement>(".reveal").forEach((el, i) => {
+        el.style.transitionDelay = `${Math.min(i, 3) * 70}ms`;
+        io.observe(el);
+      });
+    </script>
+  </body>
+</html>

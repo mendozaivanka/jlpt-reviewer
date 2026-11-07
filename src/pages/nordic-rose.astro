@@ -1,0 +1,450 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import RoseMark from "@/components/RoseMark";
+import RoseDemo from "@/components/RoseDemo";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { site } from "@/data/site";
+import { themes, type Theme, type ThemeName } from "@/data/tokens";
+import { contrast, format } from "@/lib/contrast";
+
+const themeOrder: { id: ThemeName; label: string; hc: boolean }[] = [
+  { id: "light", label: "Light", hc: false },
+  { id: "dark", label: "Dark", hc: false },
+  { id: "light-hc", label: "Light HC", hc: true },
+  { id: "dark-hc", label: "Dark HC", hc: true },
+];
+
+// ── Colour: brand groups (name, token, what it is for) ───────────────────────
+const groups: { name: string; note: string; tokens: { key: keyof Theme; label: string }[] }[] = [
+  {
+    name: "Rosas · pink",
+    note: "The primary. Buttons, selection, the mark; the ramp drives sequential maps and charts.",
+    tokens: [
+      { key: "rosas1", label: "rosas.1" },
+      { key: "rosas2", label: "rosas.2" },
+      { key: "rosas3", label: "rosas.3" },
+      { key: "rosas4", label: "rosas.4" },
+      { key: "rosas5", label: "rosas.5" },
+    ],
+  },
+  {
+    name: "Mist & Slate · ground and ink",
+    note: "Cool greys with a faint blue bias, so the pink stays the only warm colour.",
+    tokens: [
+      { key: "background", label: "background" },
+      { key: "card", label: "card" },
+      { key: "muted", label: "muted" },
+      { key: "border", label: "border" },
+      { key: "foreground", label: "foreground" },
+      { key: "mutedForeground", label: "muted fg" },
+    ],
+  },
+  {
+    name: "Fjord · second colour",
+    note: "Secondary links, chart annotations and info states. Never a second button colour.",
+    tokens: [
+      { key: "fjord", label: "fjord" },
+      { key: "fjordInk", label: "fjord ink" },
+    ],
+  },
+  {
+    name: "Tints · categories",
+    note: "Moss, sand and heather label categories and status, always with dark text on top.",
+    tokens: [
+      { key: "moss", label: "moss" },
+      { key: "sand", label: "sand" },
+      { key: "heather", label: "heather" },
+    ],
+  },
+];
+
+// ── Semantic roles across all four themes ────────────────────────────────────
+const roles: { label: string; key: keyof Theme }[] = [
+  { label: "Page", key: "background" },
+  { label: "Card", key: "card" },
+  { label: "Body text", key: "foreground" },
+  { label: "Muted text", key: "mutedForeground" },
+  { label: "Primary", key: "primary" },
+  { label: "Links / strong", key: "primaryStrong" },
+  { label: "Fjord ink", key: "fjordInk" },
+  { label: "Border", key: "border" },
+  { label: "Input border", key: "input" },
+  { label: "Focus ring", key: "ring" },
+];
+
+// ── Accessibility: contrast computed from the tokens at build time ───────────
+type Pair = { label: string; fg: keyof Theme; bg: keyof Theme; kind: "text" | "ui" };
+const pairs: Pair[] = [
+  { label: "Text", fg: "foreground", bg: "background", kind: "text" },
+  { label: "Muted text", fg: "mutedForeground", bg: "background", kind: "text" },
+  { label: "Links / strong", fg: "primaryStrong", bg: "background", kind: "text" },
+  { label: "Fjord text", fg: "fjordInk", bg: "background", kind: "text" },
+  { label: "Button label", fg: "primaryForeground", bg: "primary", kind: "text" },
+  { label: "Badge text (worst tint)", fg: "foreground", bg: "rosas2", kind: "text" },
+  { label: "Input border", fg: "input", bg: "background", kind: "ui" },
+  { label: "Focus ring", fg: "ring", bg: "background", kind: "ui" },
+  { label: "Mark line on pink", fg: "primaryForeground", bg: "primary", kind: "ui" },
+];
+const tints: (keyof Theme)[] = ["rosas2", "fjord", "moss", "sand", "heather", "accent"];
+const target = (kind: Pair["kind"], hc: boolean) => (kind === "text" ? (hc ? 7 : 4.5) : hc ? 4.5 : 3);
+
+const results = pairs.map((p) => ({
+  ...p,
+  cells: themeOrder.map((t) => {
+    const theme = themes[t.id];
+    const ratio =
+      p.label.startsWith("Badge")
+        ? Math.min(...tints.map((bg) => contrast(theme.foreground, theme[bg])))
+        : contrast(theme[p.fg], theme[p.bg]);
+    const need = target(p.kind, t.hc);
+    return { ratio, need, pass: ratio >= need };
+  }),
+}));
+
+// A failing pair fails the build: the palette can't quietly regress.
+const failures = results.flatMap((r) =>
+  r.cells.flatMap((c, i) => (c.pass ? [] : [`${r.label} in ${themeOrder[i].label}: ${format(c.ratio)} < ${c.need}:1`])),
+);
+if (failures.length) throw new Error(`Nordic Rose contrast check failed:\n${failures.join("\n")}`);
+
+// ── Type scale ───────────────────────────────────────────────────────────────
+const scale = [
+  ["4xl", 56],
+  ["3xl", 44],
+  ["2xl", 34],
+  ["xl", 26],
+  ["lg", 20],
+  ["md", 16],
+  ["sm", 14],
+  ["xs", 12],
+  ["2xs", 11],
+] as const;
+
+const space = [0, 1, 2, 3, 4, 6, 8, 10, 12, 16, 24, 32].map((n) => ({ token: `space.${n}`, px: n * 4 }));
+const radii = [
+  ["radius.sm", "8px", "badges, kbd"],
+  ["radius.md", "11px", "inputs, buttons"],
+  ["radius.lg", "14px", "cards"],
+  ["radius.xl", "20px", "dialogs, sheets"],
+  ["radius.pill", "999px", "badges, toggles"],
+];
+
+const sections = [
+  ["principles", "Principles"],
+  ["colour", "Colour"],
+  ["type", "Type"],
+  ["space", "Space & radius"],
+  ["components", "Components"],
+  ["accessibility", "Accessibility"],
+  ["built", "How it's built"],
+];
+
+const principles = [
+  ["Calm first", "Cool greys, soft corners and plenty of air. One clear point of focus per screen; everything else recedes."],
+  ["Rosas for action", "One pastel pink, used for the thing you should press, always with dark text. Deep rose carries links and emphasis."],
+  ["One warm colour", "Pink is the only warm hue. Fjord blue-grey is the second colour, for secondary links and annotations."],
+  ["Quiet categories", "Moss, sand and heather tint badges and chart categories. They never carry text colour themselves."],
+  ["One typeface", "Manrope for headings and body, set tighter and heavier for headings; Red Hat Mono for labels and numbers."],
+  ["Accessible by default", "4.5:1 for text and 3:1 for controls in every theme, checked at build time; high contrast built in."],
+];
+---
+
+<Layout
+  title={`Nordic Rose design system · ${site.name}`}
+  description="Nordic Rose: the design system behind this site. Tokens, type, components, accessibility and how it is built on shadcn/ui."
+>
+  <!-- ───────── Hero ───────── -->
+  <section class="reveal grid gap-5 pt-8 pb-6 sm:pt-14 sm:pb-10">
+    <span class="label-mono">Design system · source on GitHub</span>
+    <div class="flex items-center gap-4">
+      <RoseMark size={56} />
+      <h1 class="text-[clamp(2.75rem,7vw,4rem)] leading-none font-semibold tracking-tight">
+        Nordic <span class="text-muted-foreground">Rose</span>
+      </h1>
+    </div>
+    <p class="max-w-[60ch] text-xl leading-snug text-balance sm:text-[22px]">
+      Calm interfaces for careful work: cool greys, soft corners, one pastel pink for action and a single typeface.
+    </p>
+    <p class="max-w-[64ch] text-muted-foreground">
+      This is the system the rest of the site is built with. It documents the tokens, the type, every shadcn/ui component
+      in use, and the contrast numbers, which are computed from the same token file that generates the CSS.
+    </p>
+    <nav aria-label="On this page" class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+      {
+        sections.map(([id, label]) => (
+          <a href={`#${id}`} class="text-primary-strong underline decoration-primary-strong/30 underline-offset-4 hover:decoration-current">
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+  </section>
+
+  <!-- ───────── Principles ───────── -->
+  <section class="reveal scroll-mt-20 pt-6 sm:pt-10" id="principles">
+    <h2 class="mb-5 font-heading text-[clamp(1.625rem,3.4vw,2rem)] font-semibold tracking-tight">Principles</h2>
+    <ol class="grid list-none gap-x-8 gap-y-5 p-0 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        principles.map(([title, body], i) => (
+          <li class="grid gap-1 border-t border-border pt-3">
+            <span class="label-mono">0{i + 1}</span>
+            <h3 class="font-heading text-xl font-semibold">{title}</h3>
+            <p class="text-sm text-muted-foreground">{body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- ───────── Colour ───────── -->
+  <section class="reveal scroll-mt-20 pt-10 sm:pt-14" id="colour">
+    <h2 class="mb-1 font-heading text-[clamp(1.625rem,3.4vw,2rem)] font-semibold tracking-tight">Colour</h2>
+    <p class="mb-5 max-w-[64ch] text-muted-foreground">
+      Components never use these directly: they go through semantic roles (<code class="font-mono text-[13px]">--primary</code>,
+      <code class="font-mono text-[13px]">--muted-foreground</code>…) that change per theme.
+    </p>
+    <div class="grid gap-4 md:grid-cols-2">
+      {
+        groups.map((g) => (
+          <Card>
+            <CardHeader>
+              <h3 class="font-heading text-lg leading-snug font-semibold">{g.name}</h3>
+              <p class="text-sm text-muted-foreground">{g.note}</p>
+            </CardHeader>
+            <CardContent>
+              <ul class="grid list-none gap-2 p-0">
+                {g.tokens.map((t) => (
+                  <li class="grid grid-cols-[1fr_auto_auto] items-center gap-3 text-[13px]">
+                    <span class="font-mono text-muted-foreground">{t.label}</span>
+                    {(["light", "dark"] as const).map((mode) => (
+                      <span class="flex items-center gap-1.5">
+                        <i class="size-5 rounded-sm border border-border" style={`background:${themes[mode][t.key]}`} />
+                        <code class="font-mono text-xs">{themes[mode][t.key]}</code>
+                      </span>
+                    ))}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        ))
+      }
+    </div>
+
+    <h3 class="mt-8 mb-3 font-heading text-xl font-semibold">Semantic roles</h3>
+    <Card className="py-0">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Role</TableHead>
+            {themeOrder.map((t) => <TableHead>{t.label}</TableHead>)}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {
+            roles.map((r) => (
+              <TableRow>
+                <TableCell className="font-medium">{r.label}</TableCell>
+                {themeOrder.map((t) => (
+                  <TableCell>
+                    <span class="flex items-center gap-1.5">
+                      <i class="size-4 shrink-0 rounded-sm border border-border" style={`background:${themes[t.id][r.key]}`} />
+                      <code class="font-mono text-xs">{themes[t.id][r.key]}</code>
+                    </span>
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
+    </Card>
+  </section>
+
+  <!-- ───────── Type ───────── -->
+  <section class="reveal scroll-mt-20 pt-10 sm:pt-14" id="type">
+    <h2 class="mb-5 font-heading text-[clamp(1.625rem,3.4vw,2rem)] font-semibold tracking-tight">Type</h2>
+    <div class="grid gap-4 md:grid-cols-3">
+      <Card>
+        <CardHeader><CardTitle className="label-mono font-sans font-medium">Headings · Manrope 600–700</CardTitle></CardHeader>
+        <CardContent>
+          <p class="font-heading text-[34px] leading-[1.1] font-semibold tracking-tight">Calm work, in rose.</p>
+          <p class="mt-2 text-xl font-medium tracking-tight">丁寧な仕事のための、穏やかなUI。</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle className="label-mono font-sans font-medium">Body · Manrope 400–500</CardTitle></CardHeader>
+        <CardContent>
+          <p class="text-[15px] leading-relaxed">
+            Rounded and steady, legible at small sizes. The same family as the headings, so pages read as one voice.
+            Japanese falls back to the system's Hiragino or Noto Sans JP.
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle className="label-mono font-sans font-medium">Utility · Red Hat Mono</CardTitle></CardHeader>
+        <CardContent>
+          <p class="font-mono text-[13px] leading-relaxed">
+            pass 114 · fail 6<br />
+            summarise.prompt v9<br />
+            14.5995° N · 120.9842° E
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+
+    <h3 class="mt-8 mb-3 font-heading text-xl font-semibold">Scale</h3>
+    <Card>
+      <CardContent className="grid gap-3">
+        {
+          scale.map(([name, px]) => (
+            <div class="grid grid-cols-[56px_minmax(0,1fr)] items-baseline gap-4 border-b border-border pb-3 last:border-b-0 last:pb-0">
+              <span class="font-mono text-xs text-muted-foreground">
+                {name}
+                <br />
+                {px}px
+              </span>
+              <span
+                class:list={["truncate leading-[1.15]", px >= 26 ? "font-heading font-semibold tracking-tight" : ""]}
+                style={`font-size:${px}px`}
+              >
+                Calm work, in rose
+              </span>
+            </div>
+          ))
+        }
+      </CardContent>
+    </Card>
+  </section>
+
+  <!-- ───────── Space & radius ───────── -->
+  <section class="reveal scroll-mt-20 pt-10 sm:pt-14" id="space">
+    <h2 class="mb-5 font-heading text-[clamp(1.625rem,3.4vw,2rem)] font-semibold tracking-tight">Space & radius</h2>
+    <div class="grid gap-4 md:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <h3 class="font-heading text-lg leading-snug font-semibold">Space</h3>
+          <p class="text-sm text-muted-foreground">A 4px rhythm (Tailwind's scale), with 8px as the working step.</p>
+        </CardHeader>
+        <CardContent>
+          <ul class="grid list-none gap-2 p-0">
+            {
+              space.map((s) => (
+                <li class="grid grid-cols-[88px_48px_minmax(0,1fr)] items-center gap-3 text-[13px]">
+                  <span class="font-mono text-muted-foreground">{s.token}</span>
+                  <span class="font-mono text-xs">{s.px}px</span>
+                  <i class="block h-3 rounded-sm bg-rosas-3" style={`width:${Math.max(s.px, 2)}px`} />
+                </li>
+              ))
+            }
+          </ul>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <h3 class="font-heading text-lg leading-snug font-semibold">Radius</h3>
+          <p class="text-sm text-muted-foreground">14px cards and generous rounding: soft, but never bubbly.</p>
+        </CardHeader>
+        <CardContent>
+          <ul class="grid list-none gap-3 p-0">
+            {
+              radii.map(([token, value, use]) => (
+                <li class="grid grid-cols-[88px_56px_minmax(0,1fr)_40px] items-center gap-3 text-[13px]">
+                  <span class="font-mono text-muted-foreground">{token}</span>
+                  <span class="font-mono text-xs">{value}</span>
+                  <span class="text-muted-foreground">{use}</span>
+                  <i class="block size-10 border-2 border-rosas-4 bg-rosas-1" style={`border-radius:${value}`} />
+                </li>
+              ))
+            }
+          </ul>
+        </CardContent>
+      </Card>
+    </div>
+  </section>
+
+  <!-- ───────── Components ───────── -->
+  <section class="reveal scroll-mt-20 pt-10 sm:pt-14" id="components">
+    <h2 class="mb-1 font-heading text-[clamp(1.625rem,3.4vw,2rem)] font-semibold tracking-tight">Components</h2>
+    <p class="mb-5 max-w-[64ch] text-muted-foreground">
+      Live shadcn/ui components, installed with the CLI and themed only through tokens. Try them in each theme.
+    </p>
+    <RoseDemo client:visible />
+  </section>
+
+  <!-- ───────── Accessibility ───────── -->
+  <section class="reveal scroll-mt-20 pt-10 sm:pt-14" id="accessibility">
+    <h2 class="mb-1 font-heading text-[clamp(1.625rem,3.4vw,2rem)] font-semibold tracking-tight">Accessibility</h2>
+    <p class="mb-5 max-w-[64ch] text-muted-foreground">
+      Contrast ratios computed from <code class="font-mono text-[13px]">src/data/tokens.ts</code> when the site is built.
+      Targets: 4.5:1 for text and 3:1 for controls; 7:1 and 4.5:1 in the high-contrast themes. A failing pair fails the
+      build.
+    </p>
+    <Card className="py-0">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Pair</TableHead>
+            {themeOrder.map((t) => <TableHead>{t.label}</TableHead>)}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {
+            results.map((r) => (
+              <TableRow>
+                <TableCell className="font-medium">
+                  {r.label}
+                  <span class="block text-xs font-normal text-muted-foreground">{r.kind === "text" ? "text" : "UI, 3:1 class"}</span>
+                </TableCell>
+                {r.cells.map((c) => (
+                  <TableCell>
+                    <span class="flex items-center gap-2">
+                      <code class="font-mono text-xs tabular-nums">{format(c.ratio)}</code>
+                      <Badge className={c.pass ? "bg-moss text-foreground" : "bg-destructive/15 text-destructive"}>
+                        {c.pass ? "pass" : "fail"}
+                      </Badge>
+                    </span>
+                    <span class="block text-[11px] text-muted-foreground">target {c.need}:1</span>
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
+    </Card>
+    <ul class="mt-5 grid list-disc gap-1.5 pl-5 text-sm text-muted-foreground sm:grid-cols-2">
+      <li>Visible focus ring on every control (<code class="font-mono text-xs">--ring</code>, 3:1 against the page).</li>
+      <li>Light, dark and system themes; high contrast follows <code class="font-mono text-xs">prefers-contrast: more</code> or the switch above.</li>
+      <li><code class="font-mono text-xs">prefers-reduced-motion</code> turns off the reveal, the pulse and transitions.</li>
+      <li>Radix primitives underneath: menus, dialogs, tabs and selects come with the right roles and keyboard handling.</li>
+      <li>Decorative previews are <code class="font-mono text-xs">aria-hidden</code>; the sparkline has a text alternative.</li>
+      <li>Everything renders without JavaScript; islands only add interaction.</li>
+    </ul>
+  </section>
+
+  <!-- ───────── How it's built ───────── -->
+  <section class="reveal scroll-mt-20 pt-10 pb-4 sm:pt-14" id="built">
+    <h2 class="mb-5 font-heading text-[clamp(1.625rem,3.4vw,2rem)] font-semibold tracking-tight">How it's built</h2>
+    <ol class="grid list-none gap-x-8 gap-y-5 p-0 sm:grid-cols-2">
+      {
+        [
+          ["Tokens in TypeScript", "src/data/tokens.ts holds every colour for four themes. A script generates tokens.css from it before each build, and this page reads the same file."],
+          ["Tailwind CSS v4 + shadcn/ui", "shadcn's CSS-variable theme (radix-nova preset) maps straight onto the tokens, so every component picks up Nordic Rose with no overrides."],
+          ["All shadcn/ui components", "Button, Card, Badge, Tabs, Dropdown Menu, Command, Dialog, Select, Switch, Toggle Group, Table, Kbd, Avatar, Separator, Sonner: added with the CLI, versioned in src/components/ui."],
+          ["Astro islands", "Pages are static HTML; only the interactive parts ship React (client:load / idle / visible)."],
+          ["Checks on every build", "astro check for types, and the contrast table above, which throws if any pair drops below target."],
+          ["Static hosting", "Plain static files, so any free static host works (Render, Netlify, Cloudflare Pages, GitHub Pages)."],
+        ].map(([title, body], i) => (
+          <li class="grid gap-1 border-t border-border pt-3">
+            <span class="label-mono">0{i + 1}</span>
+            <h3 class="font-heading text-xl font-semibold">{title}</h3>
+            <p class="text-sm text-muted-foreground">{body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</Layout>

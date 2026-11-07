@@ -1,0 +1,38 @@
+---
+import ThemeMenu from "@/components/ThemeMenu";
+import RoseMark from "@/components/RoseMark";
+import { nav, site, href } from "@/data/site";
+
+const path = Astro.url.pathname;
+---
+
+<header
+  class="horizon sticky top-0 z-40 border-b border-border bg-background/85 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md print:hidden"
+>
+  <div class="container-site flex h-14 items-center gap-2 sm:h-[60px] sm:gap-4">
+    <a
+      href={href("/")}
+      class="flex items-center gap-2.5 rounded-md font-heading text-lg font-bold tracking-tight outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+      aria-label={`${site.name}, home`}
+    >
+      <RoseMark size={28} />
+      <span class="max-[520px]:sr-only">{site.name}</span>
+    </a>
+    <nav class="-mx-1 flex min-w-0 gap-0.5 overflow-x-auto px-1 [scrollbar-width:none]" aria-label="Pages">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={path === item.href ? "page" : undefined}
+            class="shrink-0 whitespace-nowrap rounded-md px-2 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground aria-[current=page]:text-foreground sm:px-2.5 sm:text-sm"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="ml-auto flex items-center gap-1.5">
+      <ThemeMenu client:load />
+    </div>
+  </div>
+</header>

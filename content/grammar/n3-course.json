@@ -1,0 +1,125 @@
+[
+  {
+    "id": "n3-01", "level": 3, "title": "Typical of, -ish, like", "titleJa": "春らしい・水っぽい",
+    "patterns": [
+      { "id": "rashii-typical", "p": "〜らしい（典型）", "form": "N + らしい", "meaning": "typical of; the way a ~ should be", "plain": "いかにも〜という感じだ",
+        "note": "Different from the N4 らしい meaning 'apparently'. Here it attaches straight to a noun and praises or describes a typical quality.",
+        "ex": [
+          { "ja": "今日は春らしい暖かい日ですね。", "en": "It's a warm, spring-like day today.", "hit": "春らしい" },
+          { "ja": "文句を言うなんて、あなたらしくないね。", "en": "Complaining isn't like you.", "hit": "あなたらしくない" } ],
+        "test": { "q": "彼女はいつも明るくて、とても彼女（　）。", "opts": ["らしい", "そうだ", "ようだ", "ばかりだ"], "a": 0 } },
+      { "id": "ppoi", "p": "〜っぽい", "form": "N / V-ます stem / い-adj stem + っぽい", "meaning": "-ish; tends to (often negative)", "plain": "〜のような感じがする／よく〜する",
+        "ex": [
+          { "ja": "このスープは水っぽくて、おいしくない。", "en": "This soup is watery and not tasty.", "hit": "水っぽくて" },
+          { "ja": "年をとって、忘れっぽくなった。", "en": "As I've got older I've become forgetful.", "hit": "忘れっぽく" } ],
+        "test": { "q": "父は怒り（　）性格で、すぐ大きな声を出す。", "opts": ["っぽい", "らしい", "みたいな", "ような"], "a": 0 } },
+      { "id": "mitaina", "p": "〜みたいな／〜みたいに", "form": "N + みたいな + N / N + みたいに + V", "meaning": "like, comparing in conversation", "plain": "〜のような／〜のように",
+        "ex": [
+          { "ja": "子どもみたいなことを言わないで。", "en": "Don't say such childish things.", "hit": "子どもみたいな" },
+          { "ja": "夢みたいに楽しい一日だった。", "en": "It was a day as fun as a dream.", "hit": "夢みたいに" } ],
+        "test": { "q": "彼は鳥（　）空を飛びたいと言っている。", "opts": ["みたいに", "みたいな", "っぽい", "らしい"], "a": 0 } }
+    ]
+  },
+  {
+    "id": "n3-02", "level": 3, "title": "Short forms in conversation", "titleJa": "置いといて・食べちゃった",
+    "patterns": [
+      { "id": "toku", "p": "〜とく", "form": "V-て → とく, V-で → どく", "meaning": "do in advance, in conversation (= ておく)", "plain": "〜ておく",
+        "ex": [
+          { "ja": "飲み物、冷蔵庫に入れとくね。", "en": "I'll put the drinks in the fridge.", "hit": "入れとく" },
+          { "ja": "その本、机の上に置いといて。", "en": "Leave that book on the desk.", "hit": "置いといて" } ],
+        "test": { "q": "「このコップ、どうする？」「そこに置い（　）。あとで洗うから。」", "opts": ["といて", "どいて", "なきゃ", "ちゃって"], "a": 0 } },
+      { "id": "chau", "p": "〜ちゃう／〜じゃう", "form": "V-て → ちゃう, V-で → じゃう", "meaning": "end up doing, or do completely, in conversation (= てしまう)", "plain": "〜てしまう",
+        "ex": [
+          { "ja": "あ、ケーキ全部食べちゃった。", "en": "Oh, I ate the whole cake.", "hit": "食べちゃった" },
+          { "ja": "財布を家に忘れて来ちゃった。", "en": "I came out and left my wallet at home.", "hit": "来ちゃった" } ],
+        "test": { "q": "昨日は疲れて、テレビを見ながら寝（　）。", "opts": ["ちゃった", "じゃった", "とった", "なきゃ"], "a": 0 } },
+      { "id": "nakya", "p": "〜なきゃ", "form": "V-ない stem + なきゃ（いけない）", "meaning": "have to, in conversation (= なければ)", "plain": "〜しなければならない",
+        "ex": [
+          { "ja": "もう八時だ。早く行かなきゃ。", "en": "It's already eight. I have to go.", "hit": "行かなきゃ" },
+          { "ja": "明日までにこの本を返さなきゃいけない。", "en": "I have to return this book by tomorrow.", "hit": "返さなきゃ" } ],
+        "test": { "q": "試験は来週だから、そろそろ勉強し（　）いけない。", "opts": ["なきゃ", "ても", "とく", "ながら"], "a": 0 } }
+    ]
+  },
+  {
+    "id": "n3-03", "level": 3, "title": "Trying, refusing, half-done", "titleJa": "しようとする",
+    "patterns": [
+      { "id": "you-to-suru", "p": "〜ようとする", "form": "V-volitional + とする", "meaning": "try to; be just about to", "plain": "〜しようと努力する／〜する直前だ",
+        "ex": [
+          { "ja": "電車に乗ろうとしたとき、ドアが閉まった。", "en": "Just as I was about to get on the train, the doors closed.", "hit": "乗ろうとした" },
+          { "ja": "思い出そうとしたが、名前が出てこない。", "en": "I tried to remember, but the name won't come.", "hit": "思い出そうとした" } ],
+        "test": { "q": "家を出（　）としたとき、電話が鳴った。", "opts": ["よう", "る", "た", "て"], "a": 0 } },
+      { "id": "you-to-shinai", "p": "〜ようとしない", "form": "V-volitional + としない", "meaning": "won't, refuses to (said about someone else)", "plain": "〜する気持ちがない",
+        "ex": [
+          { "ja": "弟は野菜を食べようとしない。", "en": "My little brother won't eat vegetables.", "hit": "食べようとしない" },
+          { "ja": "彼は人の話を聞こうとしない。", "en": "He won't listen to what others say.", "hit": "聞こうとしない" } ],
+        "test": { "q": "何度注意しても、息子は部屋を片付け（　）としない。", "opts": ["よう", "ない", "たい", "る"], "a": 0 } },
+      { "id": "kake", "p": "〜かけ", "form": "V-ます stem + かけ（の / だ）", "meaning": "half-done, started but not finished", "plain": "途中まで〜した",
+        "ex": [
+          { "ja": "テーブルの上に、飲みかけのコーヒーがある。", "en": "There's a half-drunk coffee on the table.", "hit": "飲みかけ" },
+          { "ja": "読みかけの本を電車に忘れてしまった。", "en": "I left a book I was halfway through on the train.", "hit": "読みかけ" } ],
+        "test": { "q": "食べ（　）のパンを、ねこに取られた。", "opts": ["かけ", "ながら", "たまま", "ずに"], "a": 0 } }
+    ]
+  },
+  {
+    "id": "n3-04", "level": 3, "title": "Nothing but, not only, just because", "titleJa": "ばかり",
+    "patterns": [
+      { "id": "te-bakari", "p": "〜てばかりいる", "form": "V-て + ばかりいる", "meaning": "do nothing but (a complaint)", "plain": "いつも〜している（よくない）",
+        "ex": [
+          { "ja": "弟はゲームをしてばかりいる。", "en": "My brother does nothing but play games.", "hit": "してばかりいる" },
+          { "ja": "泣いてばかりいないで、話してごらん。", "en": "Stop just crying and tell me.", "hit": "泣いてばかり" } ],
+        "test": { "q": "休みの日、夫は寝て（　）いる。", "opts": ["ばかり", "まま", "かけ", "ところ"], "a": 0 } },
+      { "id": "bakarika", "p": "〜ばかりか", "form": "plain form / N + ばかりか", "meaning": "not only ... but also", "plain": "〜だけでなく、さらに",
+        "ex": [
+          { "ja": "彼は英語ばかりか、中国語も話せる。", "en": "He speaks not only English but Chinese too.", "hit": "英語ばかりか" },
+          { "ja": "雨ばかりか、風も強くなってきた。", "en": "Not only is it raining, the wind has picked up too.", "hit": "雨ばかりか" } ],
+        "test": { "q": "この店は安い（　）、味もいい。", "opts": ["ばかりか", "ばかりに", "てばかり", "たばかり"], "a": 0 } },
+      { "id": "bakarini", "p": "〜ばかりに", "form": "plain form + ばかりに", "meaning": "just because (leading to a bad result)", "plain": "〜だけが原因で、悪い結果になった",
+        "ex": [
+          { "ja": "一度うそをついたばかりに、友だちを失った。", "en": "Just because I lied once, I lost a friend.", "hit": "ついたばかりに" },
+          { "ja": "道を一本間違えたばかりに、一時間も遅れた。", "en": "Just because I took one wrong road, I was an hour late.", "hit": "間違えたばかりに" } ],
+        "test": { "q": "少しお金が足りなかった（　）、ほしかったカメラが買えなかった。", "opts": ["ばかりに", "ばかりか", "ばかりで", "ところに"], "a": 0 } }
+    ]
+  },
+  {
+    "id": "n3-05", "level": 3, "title": "Even though, considering", "titleJa": "くせに・のに・わりに",
+    "patterns": [
+      { "id": "kuseni", "p": "〜くせに", "form": "plain form (Nの / な-adjな) + くせに", "meaning": "even though (criticising someone)", "plain": "〜のに（相手を非難して）",
+        "note": "Used about people, with blame. Not used about yourself.",
+        "ex": [
+          { "ja": "知っているくせに、教えてくれない。", "en": "He knows, yet he won't tell me.", "hit": "知っているくせに" },
+          { "ja": "自分はできないくせに、人に文句ばかり言う。", "en": "He can't do it himself, yet all he does is complain about others.", "hit": "できないくせに" } ],
+        "test": { "q": "弟は自分では何もしない（　）、文句ばかり言う。", "opts": ["くせに", "ために", "ように", "ところ"], "a": 0 } },
+      { "id": "noni", "p": "〜のに", "form": "plain form (な-adjな / Nな) + のに", "meaning": "even though (disappointment or surprise)", "plain": "〜けれど（残念・意外）",
+        "ex": [
+          { "ja": "一生懸命勉強したのに、試験に落ちた。", "en": "Even though I studied hard, I failed the exam.", "hit": "勉強したのに" },
+          { "ja": "日曜日なのに、会社に行かなければならない。", "en": "Even though it's Sunday, I have to go to work.", "hit": "日曜日なのに" } ],
+        "test": { "q": "約束した（　）、彼は来なかった。", "opts": ["のに", "ので", "ために", "から"], "a": 0 } },
+      { "id": "warini", "p": "〜わりに（は）", "form": "plain form (Nの / な-adjな) + わりに", "meaning": "considering; better or worse than you'd expect", "plain": "〜から考えると、思ったより",
+        "ex": [
+          { "ja": "この店は値段のわりに、おいしい。", "en": "This place is tasty for the price.", "hit": "値段のわりに" },
+          { "ja": "兄はたくさん食べるわりに、太らない。", "en": "My brother eats a lot but doesn't put on weight.", "hit": "食べるわりに" } ],
+        "test": { "q": "このかばんは大きい（　）、軽くて便利だ。", "opts": ["わりに", "くせに", "ばかりに", "ために"], "a": 0 } }
+    ]
+  },
+  {
+    "id": "n3-06", "level": 3, "title": "Every time, each, every other", "titleJa": "たびに・ごとに・おきに",
+    "patterns": [
+      { "id": "tabini", "p": "〜たびに", "form": "V-る / Nの + たびに", "meaning": "every time", "plain": "〜するといつも",
+        "ex": [
+          { "ja": "この歌を聞くたびに、学生時代を思い出す。", "en": "Every time I hear this song, I remember my school days.", "hit": "聞くたびに" },
+          { "ja": "旅行のたびに、写真をたくさんとる。", "en": "Every trip, I take lots of photos.", "hit": "旅行のたびに" } ],
+        "test": { "q": "祖母の家に行く（　）、おかしをもらう。", "opts": ["たびに", "おきに", "ばかりに", "くせに"], "a": 0 } },
+      { "id": "gotoni", "p": "〜ごとに", "form": "N / V-る + ごとに", "meaning": "every, each (a regular unit)", "plain": "〜一つ一つに／〜するたびに",
+        "ex": [
+          { "ja": "このバスは十分ごとに来ます。", "en": "This bus comes every ten minutes.", "hit": "十分ごとに" },
+          { "ja": "季節ごとに、店の飾りが変わる。", "en": "The shop's decorations change with each season.", "hit": "季節ごとに" } ],
+        "test": { "q": "一時間（　）、休みを取ってください。", "opts": ["ごとに", "たびに", "くせに", "ばかりか"], "a": 0 } },
+      { "id": "okini", "p": "〜おきに", "form": "number + おきに", "meaning": "at intervals of; every other", "plain": "〜の間をあけて",
+        "note": "一日おきに means every other day. With hours and minutes it usually means the same as ごとに.",
+        "ex": [
+          { "ja": "薬は六時間おきに飲んでください。", "en": "Take the medicine every six hours.", "hit": "六時間おきに" },
+          { "ja": "一日おきに、ジョギングをしています。", "en": "I go jogging every other day.", "hit": "一日おきに" } ],
+        "test": { "q": "この道には、百メートル（　）木が植えてある。", "opts": ["おきに", "たびに", "くせに", "ばかりに"], "a": 0 } }
+    ]
+  }
+]

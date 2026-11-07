@@ -1,0 +1,61 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Sources and licenses · JLPT Reviewer">
+  <article class="grid max-w-[72ch] gap-6 py-8">
+    <header class="grid gap-2">
+      <span class="label-mono">About</span>
+      <h1 class="font-heading text-4xl font-bold tracking-tight">Sources and licenses</h1>
+      <p class="text-muted-foreground">
+        This review follows the method of the Nihongo Sou Matome series: weeks of six lessons and a test, vocabulary taught by
+        everyday topic, kanji met in real-world text, and grammar taught three look-alike patterns at a time. It contains no
+        content from those books.
+      </p>
+    </header>
+
+    <section class="grid gap-2">
+      <h2 class="font-heading text-xl font-semibold">Data</h2>
+      <ul class="grid list-disc gap-2 pl-5">
+        <li>
+          Word readings, meanings and example sentence links: <a class="text-primary-strong underline underline-offset-4" href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project">JMdict</a>,
+          © Electronic Dictionary Research and Development Group, <a class="text-primary-strong underline underline-offset-4" href="https://www.edrdg.org/edrdg/licence.html">CC BY-SA 4.0</a>,
+          in the JSON form made by <a class="text-primary-strong underline underline-offset-4" href="https://github.com/scriptin/jmdict-simplified">jmdict-simplified</a>.
+        </li>
+        <li>
+          Example sentences: <a class="text-primary-strong underline underline-offset-4" href="https://tatoeba.org">Tatoeba</a>, CC BY 2.0 FR, as linked from JMdict.
+        </li>
+        <li>
+          JLPT word levels: lists by <a class="text-primary-strong underline underline-offset-4" href="http://www.tanos.co.uk/jlpt/">Jonathan Waller</a>, CC BY, via
+          <a class="text-primary-strong underline underline-offset-4" href="https://github.com/jamsinclair/open-anki-jlpt-decks">open-anki-jlpt-decks</a> (MIT). The JLPT has published no official lists since 2010, so levels are approximate.
+        </li>
+        <li>
+          Kanji readings, meanings, stroke counts and levels: KANJIDIC, © EDRDG, CC BY-SA 4.0, via
+          <a class="text-primary-strong underline underline-offset-4" href="https://github.com/davidluzgouveia/kanji-data">kanji-data</a> (MIT). Only the KANJIDIC fields are used.
+        </li>
+      </ul>
+      <p class="text-sm text-muted-foreground">
+        The generated data files on this site are derived from CC BY-SA sources and are shared under CC BY-SA 4.0. The site's code is MIT licensed.
+      </p>
+    </section>
+
+    <section class="grid gap-2">
+      <h2 class="font-heading text-xl font-semibold">Written for this review</h2>
+      <p>
+        Grammar lessons, their examples and test items, and the topic grouping of words were written for this review. They can contain mistakes.
+        Every item has a flag button. Flagged items leave your cards and drills until you clear the flag.
+      </p>
+    </section>
+
+    <section class="grid gap-2">
+      <h2 class="font-heading text-xl font-semibold">How the course is built</h2>
+      <ul class="grid list-disc gap-2 pl-5">
+        <li>Weeks 1–2: an N4 placement sort, then twelve N4 grammar refresh lessons.</li>
+        <li>Weeks 3–20: six themes of three weeks each. Each lesson rechecks N4 words on its topic, teaches about 14 N3 words, introduces the kanji those words use, and ends with an 8-item practice.</li>
+        <li>Weeks 3–12 add three grammar patterns per lesson. Day 7 of every week is a timed test in JLPT question formats.</li>
+        <li>Cards are scheduled with FSRS, at a desired retention of 0.90 by default.</li>
+        <li>Audio uses your browser's Japanese voice. Quality depends on your system.</li>
+      </ul>
+    </section>
+  </article>
+</Layout>
