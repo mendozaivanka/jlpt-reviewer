@@ -69,6 +69,8 @@ function Sort({ kind, data, done, onFinish }: { kind: CardKind; data: Data; done
   );
   const [sorted, setSorted] = useState<Set<string> | null>(null);
   const [last, setLast] = useState<{ front: string; back: string; answer: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const reload = async () => setSorted(new Set((await db.sorted.where("kind").equals(kind).toArray()).map((r) => r.id)));
 
   useEffect(() => {
     db.sorted.where("kind").equals(kind).toArray().then((rows) => setSorted(new Set(rows.map((r) => r.id))));
@@ -78,11 +80,13 @@ function Sort({ kind, data, done, onFinish }: { kind: CardKind; data: Data; done
   const cur = queue[0];
 
   const answer = async (a: "know" | "unsure" | "dont") => {
-    if (!cur) return;
+    if (!cur || busy) return;
+    setBusy(true);
     await db.sorted.put({ id: cur.id, kind, answer: a, retest: a === "know" && Math.random() < 0.1 ? 1 : 0, at: Date.now() });
     if (a !== "know") await addCards(kind, [cur.id], 0);
     setLast({ front: cur.front, back: cur.back, answer: a });
-    setSorted((s) => new Set([...(s ?? []), cur.id]));
+    await reload();
+    setBusy(false);
   };
 
   useEffect(() => {
@@ -111,19 +115,22 @@ function Sort({ kind, data, done, onFinish }: { kind: CardKind; data: Data; done
         <Ja className="text-6xl font-medium">{cur.front}</Ja>
       </div>
       <div className="grid gap-2 sm:grid-cols-3">
-        <Button className="h-12" onClick={() => answer("know")}>I know it</Button>
-        <Button variant="outline" className="h-12" onClick={() => answer("unsure")}>Unsure</Button>
-        <Button variant="outline" className="h-12" onClick={() => answer("dont")}>Don't know</Button>
+        <Button className="h-12" disabled={busy} onClick={() => answer("know")}>I know it</Button>
+        <Button variant="outline" className="h-12" disabled={busy} onClick={() => answer("unsure")}>Unsure</Button>
+        <Button variant="outline" className="h-12" disabled={busy} onClick={() => answer("dont")}>Don't know</Button>
       </div>
       {last && (
         <p className="rounded-lg bg-muted p-3 text-sm">
           Last: <Ja className="font-semibold">{last.front}</Ja> <Ja>{last.back}</Ja> · {last.answer === "know" ? "marked known" : "added to cards"}
         </p>
       )}
-      <Button variant="ghost" className="h-11 w-fit text-muted-foreground" onClick={async () => {
-        for (const x of queue) await db.sorted.put({ id: x.id, kind, answer: "dont", retest: 0, at: Date.now() });
-        await addCards(kind, queue.map((x) => x.id), 0);
-        setSorted(new Set(items.map((x) => x.id)));
+      <Button variant="ghost" className="h-11 w-fit text-muted-foreground" disabled={busy} onClick={async () => {
+        setBusy(true);
+        const rest = queue.map((x) => x.id);
+        await db.sorted.bulkPut(rest.map((id) => ({ id, kind, answer: "dont" as const, retest: 0 as const, at: Date.now() })));
+        await addCards(kind, rest, 0);
+        await reload();
+        setBusy(false);
       }}>Add all remaining as cards</Button>
     </Panel>
   );
