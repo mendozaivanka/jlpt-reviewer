@@ -10,3 +10,6 @@ src/styles/tokens.css
 # downloaded sources and generated data (rebuilt by npm run data)
 .cache/
 public/data/
+
+# personal Claude Code settings
+.claude/settings.local.json
